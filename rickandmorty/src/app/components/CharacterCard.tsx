@@ -67,6 +67,12 @@ const CharacterCard = ({
           onClick={() => handleClick()}
         ></Image>
       </div>
+      <h4 className="text-black text-center">
+        {character.status} - {character.species}
+      </h4>
+      <h4 className="text-black text-center p-2">
+        Location: {character.location.name}
+      </h4>
     </div>
   );
 };
