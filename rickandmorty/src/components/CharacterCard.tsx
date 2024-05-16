@@ -3,30 +3,32 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { setFavoriteCharacterAction } from '@/serverActions/characterActions'
+import { z } from 'zod'
 // import { useState } from "react";
 
 // {"id":85,"name":"Cyclops Morty","status":"Alive","species":"Humanoid","type":"","gender":"Male","origin":{"name":"unknown","url":""},"location":{"name":"Citadel of Ricks","url":"https://rickandmortyapi.com/api/location/3"},"image":"https://rickandmortyapi.com/api/character/avatar/85.jpeg","episode":["https://rickandmortyapi.com/api/episode/10","https://rickandmortyapi.com/api/episode/28"],"url":"https://rickandmortyapi.com/api/character/85","created":"2017-11-30T20:49:52.133Z"}
+const Character = z.object({
+  id: z.number(),
+  name: z.string(),
+  status: z.string(),
+  species: z.string(),
+  type: z.string(),
+  gender: z.string(),
+  origin: z.object({
+    name: z.string(),
+    url: z.string(),
+  }),
+  location: z.object({
+    name: z.string(),
+    url: z.string(),
+  }),
+  image: z.string(),
+  episode: z.array(z.string()),
+  url: z.string(),
+  created: z.date(),
+})
 
-export type Character = {
-  id: number
-  name: string
-  status: string
-  species: string
-  type: string
-  gender: string
-  origin: {
-    name: string
-    url: string
-  }
-  location: {
-    name: string
-    url: string
-  }
-  image: string
-  episode: string[]
-  url: string
-  created: Date
-}
+export type Character = z.infer<typeof Character>
 
 const CharacterCard = ({
   character,
@@ -35,13 +37,6 @@ const CharacterCard = ({
   character: Character
   isFavorite: boolean
 }) => {
-  // const [favoriteValue, setFavoriteValue] = useState(isFavorite);
-
-  // const handleClick = () => {
-  //   setFavoriteValue(!favoriteValue);
-  //   addFavoriteFunc(character.id);
-  // };
-
   return (
     <div className='m-10 flex h-fit w-[200px] flex-col items-center justify-center rounded-md bg-slate-300 shadow-lg'>
       <Image
