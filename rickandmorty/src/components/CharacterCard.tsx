@@ -25,7 +25,7 @@ const Character = z.object({
   image: z.string(),
   episode: z.array(z.string()),
   url: z.string(),
-  created: z.date(),
+  created: z.string(),
 })
 
 export type Character = z.infer<typeof Character>
