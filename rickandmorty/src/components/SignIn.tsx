@@ -9,9 +9,7 @@ enum Error {
 
 const errorMap = {
   [Error.Credentials]: (
-    <p>
-      Your input contains invalid credentials. Check your email or password:{' '}
-    </p>
+    <p>Your input contains invalid credentials. Check your email or password</p>
   ),
 }
 
@@ -28,7 +26,7 @@ export async function SignIn({ error }: { error: string | undefined }) {
         try {
           await signIn('credentials', formData)
         } catch (error) {
-          redirect('/auth/signin/credentials')
+          if (error === 'credentials') redirect('/auth/signin/credentials')
         }
       }}
     >

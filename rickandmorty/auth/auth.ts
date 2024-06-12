@@ -45,9 +45,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // console.log('user generated')
             user = await checkUser(credentials.email as string)
             if (!user) {
-              throw new CustomError('User not found')
+              throw new CustomError('account')
             } else {
-              throw new CustomError('Invalid credentials')
+              throw new CustomError('credentials')
             }
           }
           console.log('user', user)
