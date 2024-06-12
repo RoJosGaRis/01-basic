@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { getCharacter } from '../../api/characterRequests'
+import { getCharacter } from '@/api/characterRequests'
 
 export default async function Home() {
   const characterInfo = await getCharacter(1)
