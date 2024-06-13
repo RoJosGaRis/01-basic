@@ -36,7 +36,7 @@ export const AllCharacters = ({
           <Pagination
             currentPage={currentPage}
             lastPage={`${pages}`}
-            path='/'
+            path='/characters/allCharacters'
           ></Pagination>
         </footer>
       </main>

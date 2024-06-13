@@ -1,8 +1,12 @@
 import Image from 'next/image'
 import { getCharacter } from '@/api/characterRequests'
 
-export default async function Home() {
-  const characterInfo = await getCharacter(1)
+export default async function Home({
+  params,
+}: {
+  params: { character: number }
+}) {
+  const characterInfo = await getCharacter(params.character)
   return (
     <div className='flex w-full items-center justify-center'>
       {characterInfo && (

@@ -7,7 +7,7 @@ const pool = postgres(process.env.CONNECTION_URL || '', { max: 1 })
 
 export const db = drizzle(pool)
 
-export const users = pgTable('user', {
+export const users = pgTable('logins', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -18,7 +18,9 @@ export const users = pgTable('user', {
 export const favorites = pgTable('favorites', {
   id: serial('id').primaryKey().notNull(),
   favoriteIds: text('characterId'),
-  // userId: text('userId').notNull().references(users.id),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id),
 })
 
 export type UserSelect = typeof users.$inferSelect

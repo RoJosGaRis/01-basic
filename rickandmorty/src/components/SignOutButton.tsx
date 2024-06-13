@@ -6,7 +6,6 @@ export const SignOutButton = async () => {
     <form
       action={async () => {
         'use server'
-        console.log('SI')
         await signOut()
       }}
     >

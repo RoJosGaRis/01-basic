@@ -1,6 +1,15 @@
 import NextAuth, { CredentialsSignin } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { getUser, createUser, checkUser } from '@/db/functions'
+import { comparePassword, hashPassword } from '@/functions/crypto'
+import {
+  createUser,
+  checkUser,
+  getFavorites,
+  createFavorites,
+  getUserPassword,
+} from '@/db/functions'
+import { setCookie } from '@/functions/cookies'
+import { FAVORITE_CHARACTER_KEY } from '@/const/cookies'
 
 interface User {
   id: string
@@ -26,23 +35,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       ): Promise<User | null> => {
         try {
           let user: User | null = null
-          console.log(credentials)
 
           // logic to salt and hash password
           // const pwHash = saltAndHashPassword(credentials.password)
           // logic to verify if user exists
-          user = await getUser(
-            credentials.email as string,
-            credentials.password as string,
-          )
+          user = await getUserPassword(credentials.email as string)
 
-          if (!user) {
-            console.log('user not found')
-            // await signUp({
-            //   email: credentials.email as string,
-            //   password: credentials.password as string,
-            // })
-            // console.log('user generated')
+          if (
+            !user ||
+            !comparePassword(credentials.password as string, user.password)
+          ) {
             user = await checkUser(credentials.email as string)
             if (!user) {
               throw new CustomError('account')
@@ -50,7 +52,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               throw new CustomError('credentials')
             }
           }
-          console.log('user', user)
+          let favorites = await getFavorites(user.id)
+          if (!favorites) {
+            favorites = await createFavorites(user.id)
+          }
+          setCookie(FAVORITE_CHARACTER_KEY, favorites.favoriteIds || '')
           // return user object with the their profile data
           return user
         } catch {
@@ -65,9 +71,13 @@ export const signUp = async (credentials: {
   email: string
   password: string
 }) => {
-  const user = await getUser(credentials.email, credentials.password)
+  const user = await getUserPassword(credentials.email)
   if (user) {
-    return user
+    if (comparePassword(hashPassword(credentials.password), user.password)) {
+      return user
+    } else {
+      throw new Error('User already exists')
+    }
   }
   return await createUser(credentials)
 }
